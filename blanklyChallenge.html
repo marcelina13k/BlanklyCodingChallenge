@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="file:///C:/Users/mkrow/OneDrive/Documents/Blankly/stylesheet.css">
+	<head>
+		<title>Blankly Front-end Challenge</title>
+	</head>
+	<body onload="loadDefault()">
+		<div class="main">
+			<!--picture-->
+			<img src="C:\Users\mkrow\OneDrive\Pictures\IMG_1092.JPG">
+
+			<!--intro-->
+			<div class="intro">
+				<h1 style="text-align: center">Hi, I'm Marcelina Krowinska</h1>
+			</div>
+			<div class="bio">
+				<p style="text-align: center">I am an optimistic, ambitious student of the world. At Virginia Tech, 
+					I am studying Computer Science and Finance, with the intent of gaining the knowledge I need to 
+					someday change the world. When I am not in the classroom, you can find me swimming in the pool, 
+					curled up near a window entranced by whatever book is in my hands, or out and about on an adventure 
+					with friends, and always surrounded by music. I have a strong passion for constantly learning and 
+					understanding the world more everyday and I walk through life knowing nothing is impossible without hard 
+					work, kindness, and a positive mindset!</p>
+			</div>
+			<br>
+
+			<!--table-->
+			<div class="table">
+				<table id="entries">
+					<tr>
+						<th style="width:25%; height: 40px;">Encrypted</th>
+						<th style="width:25%; height: 40px;">Message</th>
+						<th style="width:25%; height: 40px;">Date</th>
+					</tr>
+				</table>
+			</div>
+			<br>
+
+			<!--input message box-->
+			<div class="input">
+				<input id="input" type="text"></input>
+			</div>
+			<br>
+		
+			<!--button-->
+			<div class="button">
+				<button id="add" type="button">Add New Item</button>
+			</div>
+		</div>
+		<script>
+			<!--get first two entries on page load-->
+			var newEntries = 0;
+			let xhr1 = new XMLHttpRequest();
+			var response;
+			function loadDefault() {
+				xhr1.open('GET', "http://127.0.0.1:5000/get", true);
+				xhr1.send();
+				
+				xhr1.onreadystatechange = function () {
+					if (xhr1.status == 200) {
+						response = JSON.parse(xhr1.responseText);
+						
+						appendEntry(response);
+						newEntries++;
+
+						appendEntry(response);
+						newEntries++;
+					}
+					else {
+						alert("error");
+					}
+				};
+			}
+			
+			<!--take input and timestamp to JSON, send to post fxn-->
+			var send;
+			function sendInput(event) {
+				event.preventDefault();
+				
+				let entry = {
+					message: document.getElementById("input").value,
+					timestamp: Date.now()
+				}
+				if(entry.message == "") {
+					alert("Input is empty");
+				}
+				else {
+					send = JSON.stringify(entry);
+					post(send);
+				}
+			}
+			document.getElementById("add").addEventListener('click', sendInput);
+			
+			<!--add user entry to messages-->
+			let xhr2 = new XMLHttpRequest();
+			function post(input) {
+				xhr2.open('POST', "http://127.0.0.1:5000/add", true);
+				xhr2.setRequestHeader("Content-Type", "application/json");
+				xhr2.send(input);
+				
+				xhr2.onreadystatechange = function () {
+					if (xhr2.status == 200) {
+						newEntries++;
+						getNew();
+					}
+					else {
+						alert("OPTIONS error");
+					}
+				};
+			}
+			
+			<!--pull newest entry-->
+			let xhr3 = new XMLHttpRequest();
+			var getResponse;
+			function getNew() {
+				xhr3.open('GET', "http://127.0.0.1:5000/get", true);
+				xhr3.send();
+				
+				window.location.reload();
+				
+				xhr3.onreadystatechange = function () {
+					if (xhr3.status == 200) {
+						getResponse = JSON.parse(xhr3.responseText);
+						appendEntry(getResponse);
+					}
+					else {
+						alert("GET error");
+					}
+				};
+			}
+			
+			<!--add entry to new table row-->
+			<!--implements automatic truncator-->
+			function appendEntry(newEntry) {
+				const table = document.getElementById("entries");
+				
+				let newRow = document.createElement("tr");
+				newRow.class = "tableRow";
+				
+				let encrypted = document.createElement("td");
+				if(newEntry[newEntries].encrypted_message.length > 30) {
+					encrypted.innerHTML = newEntry[newEntries].encrypted_message.substring(0, 30) + "...";
+				}
+				else {
+					encrypted.innerHTML = newEntry[newEntries].encrypted_message;
+				}
+				
+				let message = document.createElement("td");
+				if(newEntry[newEntries].original_message.length > 7) {
+					message.innerHTML = newEntry[newEntries].original_message.substring(0, 7) + "...";
+				}
+				else {
+					message.innerHTML = newEntry[newEntries].original_message;
+				}
+				
+				let date = document.createElement("td");
+				var ts = new Date(newEntry[newEntries].timestamp);
+				var finalDate = (ts.getMonth()+1) + "/" + ts.getDate() + "/" + ts.getFullYear();
+				date.innerHTML = finalDate;
+				
+				newRow.append(encrypted, message, date);
+				table.append(newRow);
+			}
+		</script>
+	</body>
+</html>

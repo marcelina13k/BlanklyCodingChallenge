@@ -1,0 +1,79 @@
+.main {
+	width: 100%;
+}
+
+body {
+	font-family: Roboto;
+}
+
+img {
+	width: 200px;
+	height: 200px;
+	border-radius: 50%;
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.bio {
+	width: 50%;
+	text-align: center;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.table {
+	width:100%;
+}
+.table table {
+	border-spacing: 0;
+	border: 2px solid #bbc6d6;
+	border-radius: 10px;
+	overflow: hidden;
+	margin-left: auto;
+	margin-right: auto;
+	width: 1000px;
+}
+.table tr>td {
+	border-top: 2px solid #bbc6d6;
+}
+.table tr>th {
+	line-height: 45px;
+}
+.table tr>td {
+	line-height: 65px;
+	text-align: center;
+}
+.table tr {
+	display: table-row;
+    border-color: inherit;
+}
+
+.input {
+	width: 100%;
+	text-align: center;
+}
+.input input {
+	width: 1000px;
+	height: 50px;
+	border-radius: 10px;
+	border-color: #bbc6d6;
+}
+.input input:hover {
+	background-color: #f0f3f7;
+}
+
+.button {
+	width: 100%;
+	text-align: center;
+}
+.button button {
+	width: 1000px;
+	height: 50px;
+	border-radius: 10px;
+	background-color: black;
+	color: white;
+}
+.button button:hover {
+	background-color: #f399ff;
+}
